@@ -1,0 +1,2106 @@
+openapi: 3.0.1
+info:
+  title: HypeHubAPI
+  description: >-
+    This is API for HypeHub project. Authenticated and authorized users have
+    acces to all CRUD operations on item, outfits and their accounts.
+  contact:
+    name: HypeHub - (Mikołaj Zgórski, Mariusz Woźniak)
+    url: https://github.com/HypeHub-HH
+    email: hypehub.hh@gmail.com
+  version: v1
+paths:
+  /api/Account/{id}/Outfits:
+    get:
+      tags:
+        - Account
+      summary: >-
+        Retrieves an account with associated outfits information by its unique
+        identifier (ID).
+      description: "This endpoint allows you to retrieve an account with its associated outfit information\r\nby providing the unique identifier (\"id\") of the account as part of the URL route. After a successful retrieval,\r\na response with an HTTP 200 (OK) status code will be returned, and it will contain comprehensive information about\r\nthe account, including its associated outfits."
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the account to be retrieved.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: >-
+            The account with the specified "id" and its associated information
+            was successfully retrieved.
+          content:
+            text/plain:
+              schema:
+                $ref: >-
+                  #/components/schemas/OutfitWithAccountAndImagesAndLikesAndItemsReadDTO
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/OutfitWithAccountAndImagesAndLikesAndItemsReadDTO
+            text/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/OutfitWithAccountAndImagesAndLikesAndItemsReadDTO
+        '404':
+          description: The account with the specified "id" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Account/{id}/Items:
+    get:
+      tags:
+        - Account
+      summary: >-
+        Retrieves items associated with an account by its unique identifier
+        (ID).
+      description: "This endpoint allows you to retrieve items associated with an account by providing the unique identifier (\"id\") of\r\nthe account as part of the URL route. After a successful retrieval, a response with an HTTP 200 (OK) status code\r\nwill be returned, and it will contain the items associated with the specified account."
+      parameters:
+        - name: id
+          in: path
+          description: >-
+            The unique identifier of the account for which items are to be
+            retrieved.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: >-
+            The items associated with the specified account were successfully
+            retrieved.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ItemWithImagesAndLikesReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemWithImagesAndLikesReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ItemWithImagesAndLikesReadDTO'
+        '404':
+          description: >-
+            The account with the specified "id" was not found, or there are no
+            items associated with it.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Account/Search:
+    get:
+      tags:
+        - Account
+      summary: Search for usernames.
+      description: "This endpoint allows you to search for usernames. To use this endpoint,\r\nprovide the \"searchedUsername\" as part of the URL route. Response with an HTTP 200 (Ok) status code will be returned upon\r\nsuccessful serching."
+      parameters:
+        - name: searchedUsername
+          in: query
+          description: The username to be searched.
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: >-
+            Returns a list of usernames after a successful search that matches a
+            serched username.
+  /api/Account/Username:
+    get:
+      tags:
+        - Account
+      summary: Checks a specific username.
+      description: "This endpoint allows you to check a specific username. To use this endpoint,\r\nprovide the \"username\" as part of the URL route. Response with an HTTP 200 (Ok) status code will be returned upon\r\nsuccessful checking."
+      parameters:
+        - name: username
+          in: query
+          description: The unique username of the account to be checked.
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: >-
+            Returns a boolean value after successfully checking if the username
+            exists.
+  /api/Account/Email:
+    get:
+      tags:
+        - Account
+      summary: Checks a specific email.
+      description: "This endpoint allows you to check a specific email. To use this endpoint,\r\nprovide the \"email\" as part of the URL route. Response with an HTTP 200 (Ok) status code will be returned upon\r\nsuccessful checking."
+      parameters:
+        - name: email
+          in: query
+          description: The unique email of the account to be checked.
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: >-
+            Returns a boolean value after successfully checking if the email
+            exists.
+  /api/Account:
+    delete:
+      tags:
+        - Account
+      summary: Deletes a specific account.
+      description: "This endpoint allows you to delete a specific account. To use this endpoint,\r\nprovide the \"id\" as part of the URL route. Ensure you are authenticated with a valid authorization\r\ntoken, as this endpoint is secured with the \"Authorize\" attribute. The account with the specified \"id\"\r\nwill be deleted, and a response with an HTTP 204 (No Content) status code will be returned upon\r\nsuccessful deletion."
+      requestBody:
+        description: The unique identifier of the account to be deleted.
+        content:
+          application/json:
+            schema:
+              type: string
+              format: uuid
+          text/json:
+            schema:
+              type: string
+              format: uuid
+          application/*+json:
+            schema:
+              type: string
+              format: uuid
+      responses:
+        '204':
+          description: >-
+            The account with the specified "id" was successfully deleted, and no
+            content is returned.
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '404':
+          description: The account with the specified "id" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Account/Avatar:
+    put:
+      tags:
+        - Account
+      summary: Updates the avatar of the authenticated user's account.
+      description: "This endpoint allows the authenticated user to update their account avatar by providing the necessary\r\navatar data in the request body using the JSON format. To use this endpoint, ensure that you are authenticated\r\nwith a valid authorization token, as it is secured with the \"Authorize\" attribute. After successful update, a\r\nresponse with an HTTP 200 (OK) status code will be returned, and it will include the details of the updated account\r\navatar."
+      requestBody:
+        description: Data for updating the avatar of the user's account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateAvatarDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateAvatarDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateAvatarDTO'
+      responses:
+        '200':
+          description: >-
+            The user's account avatar was successfully updated, and the updated
+            details are returned.
+        '204':
+          description: No Content
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '404':
+          description: The account with the specified "id" in JWT was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Account/Privacy:
+    put:
+      tags:
+        - Account
+      summary: Updates the privacy settings of the authenticated user's account.
+      description: "This endpoint allows the authenticated user to update their account privacy settings by providing the necessary\r\nprivacy data in the request body using the JSON format. To use this endpoint, ensure that you are authenticated\r\nwith a valid authorization token, as it is secured with the \"Authorize\" attribute. After successful update, a\r\nresponse with an HTTP 200 (OK) status code will be returned, and it will include the details of the updated account\r\nprivacy settings."
+      requestBody:
+        description: Data for updating the privacy settings of the user's account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdatePrivacyDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdatePrivacyDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdatePrivacyDTO'
+      responses:
+        '200':
+          description: >-
+            The user's account privacy settings were successfully updated, and
+            the updated details are returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AccountGeneralInfoReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountGeneralInfoReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AccountGeneralInfoReadDTO'
+        '400':
+          description: The update request was invalid or the privacy data is incomplete.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '404':
+          description: The account with the specified "id" in JWT was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Authentication/Register:
+    post:
+      tags:
+        - Authentication
+      summary: Registers a new user account.
+      description: "This endpoint allows you to register a new user account by providing the necessary registration data\r\nin the request body using the JSON format. After successful registration, a response with an HTTP 200\r\n(OK) status code will be returned, and the newly registered user's data may be included in the response."
+      requestBody:
+        description: Data for creating a new user account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationCreateDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationCreateDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/RegistrationCreateDTO'
+      responses:
+        '200':
+          description: The user account was successfully registered.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/RegistrationReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationReadDTO'
+        '400':
+          description: The request was invalid or the registration data is incomplete.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '500':
+          description: The error occurred on the server side.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Authentication/Login:
+    post:
+      tags:
+        - Authentication
+      summary: Logs in a user to their account.
+      description: "This endpoint allows a registered user to log in to their account by providing their login credentials\r\nin the request body using the JSON format. After successful login, a response with an HTTP 200 (OK)\r\nstatus code will be returned with user authentication data, such as tokens or user information."
+      requestBody:
+        description: Data for user login.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoggingCreateDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/LoggingCreateDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/LoggingCreateDTO'
+      responses:
+        '200':
+          description: >-
+            The user was successfully logged in, and user authentication data is
+            returned with JWT and refresh token.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/RegistrationReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationReadDTO'
+        '400':
+          description: The login request was invalid or the login data is incorrect.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '500':
+          description: The error occurred on the server side.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Authentication/RefreshToken:
+    post:
+      tags:
+        - Authentication
+      summary: Refreshes a user's authentication token using a refresh token.
+      description: "This endpoint allows a user to refresh their authentication token by providing a valid refresh token\r\nin the request body using the JSON format. After a successful token refresh, a response with an HTTP 200 (OK)\r\nstatus code will be returned, and it will include the new access token for the user."
+      requestBody:
+        description: A refresh token for refreshing the user's authentication token.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/Token'
+      responses:
+        '200':
+          description: >-
+            The user's authentication token was successfully refreshed, and new
+            token is returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Token'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: >-
+            The token refresh request was invalid, or the refresh token is
+            expired or incorrect.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Authentication/RevokeToken/{username}:
+    post:
+      tags:
+        - Authentication
+      summary: Revokes a user's authentication token, effectively logging the user out.
+      description: "This endpoint allows you to revoke a user's authentication token, effectively logging the user out. To use this\r\nendpoint, provide the \"username\" as part of the URL route and ensure that you are authenticated with a valid\r\nauthorization token, as this endpoint is secured with the \"Authorize\" attribute. After successful token\r\nrevocation, a response with an HTTP 204 (No Content) status code will be returned."
+      parameters:
+        - name: username
+          in: path
+          description: The username of the user whose token should be revoked.
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '204':
+          description: >-
+            The user's authentication token was successfully revoked, and no
+            content is returned.
+        '400':
+          description: Wrong user credentials.
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Authentication/GetCurrentAccount:
+    get:
+      tags:
+        - Authentication
+      summary: Gets current account.
+      description: "This endpoint allows to get information about the current user based on the JWT token. After successful identification, a response with an HTTP 200 (OK)\r\nstatus code will be returned with user data."
+      responses:
+        '200':
+          description: The user was successfully identified, and user data is returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/RegistrationReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationReadDTO'
+        '400':
+          description: User or JWT was invalid.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: User was unauthorized or JWT was invalid
+        '500':
+          description: The error occurred on the server side.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Items/{id}:
+    get:
+      tags:
+        - Items
+      summary: Gets a item with given ID.
+      description: "Sample request:\r\n            \r\n  GET /api/Item/GetItem"
+      parameters:
+        - name: id
+          in: path
+          description: A GUID representing the unique identifier of the item.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The item was successfully found and returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ItemGenerallReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemGenerallReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ItemGenerallReadDTO'
+        '404':
+          description: The item with the specified ID was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+    put:
+      tags:
+        - Items
+      summary: Updates an existing item.
+      description: "This endpoint allows you to update an existing item with the provided data. You should provide\r\nthe item data in the request body using the JSON format. To use this endpoint, ensure that you\r\nare authenticated with a valid authorization token, as it is secured with the \"Authorize\" attribute."
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: The data for the item to be updated.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemUpdateDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ItemUpdateDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ItemUpdateDTO'
+      responses:
+        '201':
+          description: The item was successfully updated, and its updated data is returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ItemGenerallReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemGenerallReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ItemGenerallReadDTO'
+        '400':
+          description: The request was invalid, or the item data is incomplete.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+    delete:
+      tags:
+        - Items
+      summary: Deletes an item with the specified ID.
+      description: "This endpoint allows you to delete an item by providing its unique identifier as part of the URL route.\r\nTo use this endpoint, you need to be authenticated with a valid authorization token, as it is secured\r\nwith the \"Authorize\" attribute. The item will be deleted, and a response with an HTTP 204 (No Content)\r\nstatus code will be returned upon successful deletion."
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the item to be deleted.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The item was successfully deleted, and no content is returned.
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '404':
+          description: >-
+            The item with the specified ID was not found and could not be
+            deleted.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Items:
+    post:
+      tags:
+        - Items
+      summary: Creates a new item.
+      description: "This endpoint allows you to create a new item. You must provide the item data in the request body\r\nusing the JSON format. The request should also include a valid authorization token as this\r\nendpoint is secured with authentication using the \"Authorize\" attribute."
+      requestBody:
+        description: The data for the item to be created.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemCreateDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ItemCreateDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ItemCreateDTO'
+      responses:
+        '201':
+          description: The item was successfully created, and its data is returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ItemGenerallReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemGenerallReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ItemGenerallReadDTO'
+        '400':
+          description: The request was invalid or the item data is incomplete.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '500':
+          description: The error occurred on the server side.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Items/Images/{imageId}:
+    get:
+      tags:
+        - Items
+      summary: Retrieves a specific image associated with an item.
+      description: "This endpoint allows you to retrieve a specific image associated with an item. You should provide\r\nthe \"imageId\" as part of the URL route to indicate which image you want to retrieve. The response\r\nwill contain the image associated with the specified \"imageId.\""
+      parameters:
+        - name: imageId
+          in: path
+          description: The unique identifier of the image to be retrieved.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: >-
+            The specific image associated with the provided "imageId" was
+            successfully retrieved.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ItemImageReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemImageReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ItemImageReadDTO'
+        '404':
+          description: The image with the specified "imageId" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+    delete:
+      tags:
+        - Items
+      summary: Deletes a specific image associated with an item.
+      description: "This endpoint allows you to delete a specific image associated with an item. To use this endpoint,\r\nprovide the \"imageId\" as part of the URL route. Ensure you are authenticated with a valid authorization\r\ntoken, as this endpoint is secured with the \"Authorize\" attribute. The image with the specified \"imageId\"\r\nwill be deleted, and a response with an HTTP 204 (No Content) status code will be returned upon\r\nsuccessful deletion."
+      parameters:
+        - name: imageId
+          in: path
+          description: The unique identifier of the image to be deleted.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: >-
+            The image with the specified "imageId" was successfully deleted, and
+            no content is returned.
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '404':
+          description: The image with the specified "imageId" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Items/Images:
+    post:
+      tags:
+        - Items
+      summary: Uploads and associates a new image with a specific item.
+      description: "This endpoint allows you to upload and associate a new image with a specific item. To use this\r\nendpoint, provide the \"itemId\" as part of the URL route, and provide the image data in the request body\r\nusing the JSON format. Ensure you are authenticated with a valid authorization token, as this endpoint\r\nis secured with the \"Authorize\" attribute."
+      requestBody:
+        description: The data for the image to be uploaded and associated with the item.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemImageCreateDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ItemImageCreateDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ItemImageCreateDTO'
+      responses:
+        '200':
+          description: >-
+            The image was successfully created and associated with the specified
+            item.
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ItemImageReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemImageReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ItemImageReadDTO'
+        '400':
+          description: The request was invalid or the image data is incomplete.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '500':
+          description: The error occurred on the server side.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Items/{itemId}/like:
+    put:
+      tags:
+        - Items
+      summary: Likes or unlikes an item with the specified ID.
+      description: "This endpoint allows you to like or unlike an item with the specified \"id.\" To use this endpoint, provide\r\nthe \"id\" as part of the URL route and ensure you are authenticated with a valid authorization token, as this\r\nendpoint is secured with the \"Authorize\" attribute. Liking or unliking an item will affect the item's status,\r\nand a response with an HTTP 200 (OK) status code will be returned upon successful liking or unliking."
+      parameters:
+        - name: itemId
+          in: path
+          description: The unique identifier of the item to like or unlike.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The item with the specified "id" was successfully liked or unliked.
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '404':
+          description: The item with the specified "id" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Items/{itemId}/isInOutfit:
+    get:
+      tags:
+        - Items
+      summary: Checks if an item is present in any outfit.
+      description: "This endpoint allows you to check if a specific item (identified by \"itemId\") is present in any outfit.\r\nAfter processing the request, a response with an HTTP 200 (OK) status code will be returned, indicating\r\nwhether the item is present in any outfit."
+      parameters:
+        - name: itemId
+          in: path
+          description: The unique identifier of the item to be checked.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Indicates whether the item is present in any outfit.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+  /api/Outfits/{id}:
+    get:
+      tags:
+        - Outfits
+      summary: Retrieves an outfit by its unique identifier (ID).
+      description: "This endpoint allows you to retrieve outfit details by providing the unique identifier (\"id\") of the outfit\r\nas part of the URL route. After a successful retrieval, a response with an HTTP 200 (OK) status code will be\r\nreturned, and it will contain the outfit details, such as its name, description, and other attributes."
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the outfit to be retrieved.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The outfit with the specified "id" was successfully retrieved.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OutfitGenerallReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutfitGenerallReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OutfitGenerallReadDTO'
+        '404':
+          description: The outfit with the specified "id" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+    put:
+      tags:
+        - Outfits
+      summary: Updates an existing outfit.
+      description: "This endpoint allows you to update an existing outfit by providing the necessary outfit data in the request body using\r\nthe JSON format. To use this endpoint, ensure that you are authenticated with a valid authorization token, as it is\r\nsecured with the \"Authorize\" attribute. After successful update, a response with an HTTP 201 (Created) status code\r\nwill be returned, and it will include the details of the updated outfit."
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Data for updating an existing outfit.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutfitUpdateDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/OutfitUpdateDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/OutfitUpdateDTO'
+      responses:
+        '201':
+          description: >-
+            The outfit was successfully updated, and its updated details are
+            returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OutfitGenerallReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutfitGenerallReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OutfitGenerallReadDTO'
+        '400':
+          description: The update request was invalid or the outfit data is incomplete.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+    delete:
+      tags:
+        - Outfits
+      summary: Deletes an existing outfit by its unique identifier (ID).
+      description: "This endpoint allows you to delete an existing outfit by providing the unique identifier (\"id\") of the outfit\r\nas part of the URL route. To use this endpoint, ensure that you are authenticated with a valid authorization token,\r\nas it is secured with the \"Authorize\" attribute. After successful deletion, a response with an HTTP 204 (No Content)\r\nstatus code will be returned."
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the outfit to be deleted.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: >-
+            The outfit with the specified "id" was successfully deleted, and no
+            content is returned.
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '404':
+          description: The outfit with the specified "id" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Outfits/{id}/AllInformation:
+    get:
+      tags:
+        - Outfits
+      summary: >-
+        Retrieves an outfit with associated account information, likes, images,
+        and items by its unique identifier (ID).
+      description: "This endpoint allows you to retrieve an outfit with its associated account information, likes, images, and items\r\nby providing the unique identifier (\"id\") of the outfit as part of the URL route. After a successful retrieval,\r\na response with an HTTP 200 (OK) status code will be returned, and it will contain comprehensive information about\r\nthe outfit, including its associated account, likes, images, and items."
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the outfit to be retrieved.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: >-
+            The outfit with the specified "id" and its associated information
+            was successfully retrieved.
+          content:
+            text/plain:
+              schema:
+                $ref: >-
+                  #/components/schemas/OutfitWithAccountAndImagesAndLikesAndItemsReadDTO
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/OutfitWithAccountAndImagesAndLikesAndItemsReadDTO
+            text/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/OutfitWithAccountAndImagesAndLikesAndItemsReadDTO
+        '404':
+          description: The outfit with the specified "id" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Outfits/Latest:
+    get:
+      tags:
+        - Outfits
+      summary: Retrieves the latest outfits with pagination.
+      description: "This endpoint allows you to retrieve the latest outfits with pagination. Provide the \"page\" and \"pageSize\"\r\nparameters in the query string to control which page of outfits to retrieve and how many outfits to include\r\non each page. After a successful retrieval, a response with an HTTP 200 (OK) status code will be returned,\r\ncontaining the latest outfits according to the specified page and pageSize."
+      parameters:
+        - name: page
+          in: query
+          description: The page number for pagination (starting from 1).
+          style: form
+          schema:
+            type: integer
+            format: int32
+        - name: pageSize
+          in: query
+          description: The number of outfits to retrieve on each page.
+          style: form
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: >-
+            The latest outfits for the specified page and pageSize were
+            successfully retrieved.
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: >-
+                    #/components/schemas/OutfitWithAccountAndImagesAndLikesReadDTO
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: >-
+                    #/components/schemas/OutfitWithAccountAndImagesAndLikesReadDTO
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: >-
+                    #/components/schemas/OutfitWithAccountAndImagesAndLikesReadDTO
+        '400':
+          description: The pagination parameters are invalid or out of range.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Outfits:
+    post:
+      tags:
+        - Outfits
+      summary: Creates a new outfit.
+      description: "This endpoint allows you to create a new outfit by providing the necessary outfit data in the request body using\r\nthe JSON format. To use this endpoint, ensure that you are authenticated with a valid authorization token, as it is\r\nsecured with the \"Authorize\" attribute. After successful creation, a response with an HTTP 201 (Created) status code\r\nwill be returned, and it will include the details of the newly created outfit."
+      requestBody:
+        description: Data for creating a new outfit.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutfitCreateDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/OutfitCreateDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/OutfitCreateDTO'
+      responses:
+        '201':
+          description: >-
+            The new outfit was successfully created, and its details are
+            returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OutfitGenerallReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutfitGenerallReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OutfitGenerallReadDTO'
+        '400':
+          description: The creation request was invalid or the outfit data is incomplete.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '500':
+          description: The error occurred on the server side.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Outfits/Like/{outfitId}:
+    put:
+      tags:
+        - Outfits
+      summary: Likes or unlikes an existing outfit.
+      description: "This endpoint allows you to like or unlike an existing outfit by providing the unique identifier (\"outfitId\") of\r\nthe outfit as part of the URL route. To use this endpoint, ensure that you are authenticated with\r\na valid authorization token, as it is secured with the \"Authorize\" attribute. After successful liking or unliking,\r\na response with an HTTP 200 (OK) status code will be returned."
+      parameters:
+        - name: outfitId
+          in: path
+          description: The unique identifier of the outfit to like or unlike.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The item with the specified "id" was successfully liked or unliked.
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '404':
+          description: The item with the specified "id" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Outfits/{outfitId}/Items/{itemId}:
+    post:
+      tags:
+        - Outfits
+      summary: Add ann item to the outfit.
+      description: "This endpoint allows you to add an item to the outfit by providing the necessary data in\r\nthe request body using the JSON format. To use this endpoint, ensure that you are authenticated with a valid\r\nauthorization token, as it is secured with the \"Authorize\" attribute. After successful creation, a response with\r\nan HTTP 200 (Ok) status code will be returned, and it will include the details of the added outfit item."
+      parameters:
+        - name: outfitId
+          in: path
+          description: The unique identifier of the outfit.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          description: The unique identifier of the item.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The item was successfully added, and its details are returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OutfitItem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutfitItem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OutfitItem'
+        '400':
+          description: The adding request was invalid.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '500':
+          description: The error occurred on the server side.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+    delete:
+      tags:
+        - Outfits
+      summary: Removes the item from the outfit.
+      description: "This endpoint allows you to remove the item from the outfit by providing the necessary data in\r\nthe request body using the JSON format. To use this endpoint, ensure that you are authenticated with a valid authorization\r\ntoken, as it is secured with the \"Authorize\" attribute. After successful removal, a response with an HTTP 204 (No Content)\r\nstatus code will be returned."
+      parameters:
+        - name: outfitId
+          in: path
+          description: The unique identifier of the outfit.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          description: The unique identifier of the item.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The item was successfully removed, and no content is returned.
+        '400':
+          description: The removing request was invalid.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Outfits/Images/{Id}:
+    get:
+      tags:
+        - Outfits
+      summary: >-
+        Retrieves a specific image associated with an outfit by its unique
+        identifier (ID).
+      description: "This endpoint allows you to retrieve a specific image associated with an outfit by providing the unique identifier (\"Id\")\r\nof the image as part of the URL route. After a successful retrieval, a response with an HTTP 200 (OK) status code will\r\nbe returned, and it will contain the image associated with the specified ID."
+      parameters:
+        - name: Id
+          in: path
+          description: The unique identifier of the image to be retrieved.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: >-
+            The image associated with the specified "Id" was successfully
+            retrieved.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OutfitImageReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutfitImageReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OutfitImageReadDTO'
+        '404':
+          description: The image with the specified "Id" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Outfits/Images:
+    post:
+      tags:
+        - Outfits
+      summary: Creates a new image associated with an outfit.
+      description: "This endpoint allows you to create a new image associated with an outfit by providing the necessary image data in\r\nthe request body using the JSON format. To use this endpoint, ensure that you are authenticated with a valid\r\nauthorization token, as it is secured with the \"Authorize\" attribute. After successful creation, a response with\r\nan HTTP 201 (Created) status code will be returned, and it will include the details of the newly created image."
+      requestBody:
+        description: Data for creating a new image associated with an outfit.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutfitImageCreateDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/OutfitImageCreateDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/OutfitImageCreateDTO'
+      responses:
+        '201':
+          description: >-
+            The new image was successfully created, and its details are
+            returned.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OutfitImageReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutfitImageReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OutfitImageReadDTO'
+        '400':
+          description: The creation request was invalid or the image data is incomplete.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '500':
+          description: The error occurred on the server side.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+  /api/Outfits/Images/{id}:
+    delete:
+      tags:
+        - Outfits
+      summary: >-
+        Deletes an image associated with an outfit by its unique identifier
+        (ID).
+      description: "This endpoint allows you to delete an image associated with an outfit by providing the unique identifier (\"id\") of\r\nthe image as part of the URL route. To use this endpoint, ensure that you are authenticated with a valid authorization\r\ntoken, as it is secured with the \"Authorize\" attribute. After successful deletion, a response with an HTTP 204 (No Content)\r\nstatus code will be returned."
+      parameters:
+        - name: id
+          in: path
+          description: The unique identifier of the image to be deleted.
+          required: true
+          style: simple
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: >-
+            The image with the specified "id" was successfully deleted, and no
+            content is returned.
+        '401':
+          description: User was unauthorized or JWT was invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+        '404':
+          description: The image with the specified "id" was not found.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExceptionOccuredReadDTO'
+components:
+  schemas:
+    AccountGeneralInfoReadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+          nullable: true
+        isPrivate:
+          type: boolean
+        avatarUrl:
+          type: string
+          nullable: true
+      additionalProperties: false
+    AccountItemLikeReadDTO:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        account:
+          $ref: '#/components/schemas/AccountGeneralInfoReadDTO'
+      additionalProperties: false
+    AccountOutfitLikeReadDTO:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        account:
+          $ref: '#/components/schemas/AccountGeneralInfoReadDTO'
+      additionalProperties: false
+    AccountUpdateAvatarDTO:
+      type: object
+      properties:
+        avatarUrl:
+          type: string
+          nullable: true
+      additionalProperties: false
+    AccountUpdatePrivacyDTO:
+      type: object
+      properties:
+        isPrivate:
+          type: boolean
+      additionalProperties: false
+    CloathingType:
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+      type: integer
+      format: int32
+    ExceptionOccuredReadDTO:
+      type: object
+      properties:
+        msg:
+          type: string
+          nullable: true
+        errors:
+          type: array
+          items:
+            type: string
+          nullable: true
+        statusCode:
+          $ref: '#/components/schemas/HttpStatusCode'
+      additionalProperties: false
+    HttpStatusCode:
+      enum:
+        - 100
+        - 101
+        - 102
+        - 103
+        - 200
+        - 201
+        - 202
+        - 203
+        - 204
+        - 205
+        - 206
+        - 207
+        - 208
+        - 226
+        - 300
+        - 301
+        - 302
+        - 303
+        - 304
+        - 305
+        - 306
+        - 307
+        - 308
+        - 400
+        - 401
+        - 402
+        - 403
+        - 404
+        - 405
+        - 406
+        - 407
+        - 408
+        - 409
+        - 410
+        - 411
+        - 412
+        - 413
+        - 414
+        - 415
+        - 416
+        - 417
+        - 421
+        - 422
+        - 423
+        - 424
+        - 426
+        - 428
+        - 429
+        - 431
+        - 451
+        - 500
+        - 501
+        - 502
+        - 503
+        - 504
+        - 505
+        - 506
+        - 507
+        - 508
+        - 510
+        - 511
+      type: integer
+      format: int32
+    ItemCreateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        cloathingType:
+          $ref: '#/components/schemas/CloathingType'
+        brand:
+          type: string
+          nullable: true
+        model:
+          type: string
+          nullable: true
+        colorway:
+          type: string
+          nullable: true
+        price:
+          type: number
+          format: double
+          nullable: true
+        purchaseDate:
+          type: string
+          format: date-time
+          nullable: true
+        images:
+          type: array
+          items:
+            type: string
+          nullable: true
+      additionalProperties: false
+    ItemGenerallReadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          nullable: true
+        cloathingType:
+          $ref: '#/components/schemas/CloathingType'
+        brand:
+          type: string
+          nullable: true
+        model:
+          type: string
+          nullable: true
+        colorway:
+          type: string
+          nullable: true
+        price:
+          type: number
+          format: double
+          nullable: true
+        purchaseDate:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    ItemImageCreateDTO:
+      type: object
+      properties:
+        itemId:
+          type: string
+          format: uuid
+        url:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ItemImageReadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        itemId:
+          type: string
+          format: uuid
+        url:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ItemUpdateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        cloathingType:
+          $ref: '#/components/schemas/CloathingType'
+        brand:
+          type: string
+          nullable: true
+        model:
+          type: string
+          nullable: true
+        colorway:
+          type: string
+          nullable: true
+        price:
+          type: number
+          format: double
+          nullable: true
+        purchaseDate:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    ItemWithImagesAndLikesReadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          nullable: true
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountItemLikeReadDTO'
+          nullable: true
+        cloathingType:
+          $ref: '#/components/schemas/CloathingType'
+        brand:
+          type: string
+          nullable: true
+        model:
+          type: string
+          nullable: true
+        colorway:
+          type: string
+          nullable: true
+        price:
+          type: number
+          format: double
+          nullable: true
+        purchaseDate:
+          type: string
+          format: date-time
+          nullable: true
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemImageReadDTO'
+          nullable: true
+      additionalProperties: false
+    LoggingCreateDTO:
+      type: object
+      properties:
+        emailOrUsername:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+      additionalProperties: false
+    OutfitCreateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        items:
+          type: array
+          items:
+            type: string
+            format: uuid
+          nullable: true
+        images:
+          type: array
+          items:
+            type: string
+          nullable: true
+      additionalProperties: false
+    OutfitGenerallReadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        name:
+          type: string
+          nullable: true
+        creationDate:
+          type: string
+          format: date-time
+      additionalProperties: false
+    OutfitImageCreateDTO:
+      type: object
+      properties:
+        outfitId:
+          type: string
+          format: uuid
+        url:
+          type: string
+          nullable: true
+      additionalProperties: false
+    OutfitImageReadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        outfitId:
+          type: string
+          format: uuid
+        url:
+          type: string
+          nullable: true
+      additionalProperties: false
+    OutfitItem:
+      type: object
+      properties:
+        outfitId:
+          type: string
+          format: uuid
+        itemId:
+          type: string
+          format: uuid
+      additionalProperties: false
+    OutfitUpdateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    OutfitWithAccountAndImagesAndLikesAndItemsReadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        account:
+          $ref: '#/components/schemas/AccountGeneralInfoReadDTO'
+        name:
+          type: string
+          nullable: true
+        creationDate:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemWithImagesAndLikesReadDTO'
+          nullable: true
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountOutfitLikeReadDTO'
+          nullable: true
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutfitImageReadDTO'
+          nullable: true
+      additionalProperties: false
+    OutfitWithAccountAndImagesAndLikesReadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        account:
+          $ref: '#/components/schemas/AccountGeneralInfoReadDTO'
+        name:
+          type: string
+          nullable: true
+        creationDate:
+          type: string
+          format: date-time
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutfitImageReadDTO'
+          nullable: true
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountOutfitLikeReadDTO'
+          nullable: true
+      additionalProperties: false
+    RegistrationCreateDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        username:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+      additionalProperties: false
+    RegistrationReadDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+      additionalProperties: false
+    Token:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          nullable: true
+        refreshToken:
+          type: string
+          nullable: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Please enter a valid token
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - Bearer: []
